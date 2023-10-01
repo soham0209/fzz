@@ -1,0 +1,6 @@
+setup.py
+/Users/soham/PycharmProjects/fzz/pyfzz/./fzz.cpp
+fzz.egg-info/PKG-INFO
+fzz.egg-info/SOURCES.txt
+fzz.egg-info/dependency_links.txt
+fzz.egg-info/top_level.txt
