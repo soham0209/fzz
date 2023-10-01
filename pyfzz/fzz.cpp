@@ -80,7 +80,7 @@ void getBoundaryChainPhat(const std::vector<SimplexIdMap> &id_maps,
     Simplex bound_simp(simp.begin()+1, simp.end());
     bound_c.push_back(id_maps.at(bound_simp.size() - 1).at(bound_simp));
 
-    for (size_t i = 0; i < simp.size()-1; ++i) {
+    for (Integer i = 0; i < simp.size()-1; ++i) {
         bound_simp[i] = simp[i];
         bound_c.push_back(id_maps.at(bound_simp.size() - 1).at(bound_simp));
     }
@@ -103,7 +103,7 @@ void FastZigzag::compute(const std::vector<Simplex> &filt_simp,
 
     simp_num = 0;
     Integer max_dim = 0;
-    for (size_t i = 0; i < filt_op.size(); ++i) {
+    for (auto i = 0; i < filt_op.size(); ++i) {
         if (filt_op[i]) { 
             ++simp_num; 
             if (filt_simp[i].size() - 1 > max_dim) { max_dim = filt_simp[i].size() - 1; }
@@ -131,7 +131,7 @@ void FastZigzag::compute(const std::vector<Simplex> &filt_simp,
     Integer orig_f_id = 0;
     Integer s_id = 1;
 
-    for (size_t i = 0; i < filt_simp.size(); ++i) {
+    for (auto i = 0; i < filt_simp.size(); ++i) {
         const Simplex &simp = filt_simp[i];
 
         if (filt_op[i]) {
@@ -152,7 +152,7 @@ void FastZigzag::compute(const std::vector<Simplex> &filt_simp,
         orig_f_id ++;
     }
 
-    for (size_t i = id_maps.size() - 1; i >= 0; -- i) {
+    for (Integer i = id_maps.size() - 1; i >= 0; -- i) {
         for (const auto &it : id_maps.at(i)) { 
             del_ids.push_back(it.second); 
             orig_f_del_id.push_back(orig_f_id);
@@ -215,20 +215,27 @@ std::vector<std::tuple<Integer, Integer, Integer>> FastZigzag::compute_zigzag(co
     
     // filt_simp_lin.emplace_back();
     
-    for (auto i = 0; i < filt_simp.size(); ++i) {
+    for (auto i = 0; i < filt_simp.size(); i++) {
         auto op = std::get<0>(filt_simp[i]);
         auto simp = std::get<1>(filt_simp[i]);
-        Simplex s;
+        // filt_simp_lin.emplace_back();
+        std::cout << "idx: " << i;
+        FZZ::Simplex s;
         if (op == 'i') {
-            filt_op.emplace_back(true);
+            filt_op.push_back(true);
         } else {
             assert(op == 'd');
-            filt_op.emplace_back(false);
+            filt_op.push_back(false);
         }
-        for(auto k = 0; k < simp.size(); ++k)
+        std::cout << " Simplex: ";
+        for(auto k = 0; k < simp.size(); k++){
             s.push_back(simp[k]);
+            std::cout << simp[k] << " ";
+        }
+        std::cout << std::endl;
 
-        filt_simp_lin.emplace_back(s);
+        filt_simp_lin.push_back(s);
+        
     }
     std::vector< std::tuple<FZZ::Integer, FZZ::Integer, FZZ::Integer> > persistence;
     // FZZ::FastZigzag fzz;
