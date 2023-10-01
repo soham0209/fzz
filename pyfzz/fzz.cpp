@@ -18,6 +18,9 @@
 #include <phat/algorithms/twist_reduction.h>
 
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+#include <pybind11/complex.h>
+#include <pybind11/functional.h>
 namespace py = pybind11;
 
 namespace FZZ { 
@@ -77,7 +80,7 @@ void getBoundaryChainPhat(const std::vector<SimplexIdMap> &id_maps,
     Simplex bound_simp(simp.begin()+1, simp.end());
     bound_c.push_back(id_maps.at(bound_simp.size() - 1).at(bound_simp));
 
-    for (Integer i = 0; i < simp.size()-1; ++i) {
+    for (size_t i = 0; i < simp.size()-1; ++i) {
         bound_simp[i] = simp[i];
         bound_c.push_back(id_maps.at(bound_simp.size() - 1).at(bound_simp));
     }
@@ -100,7 +103,7 @@ void FastZigzag::compute(const std::vector<Simplex> &filt_simp,
 
     simp_num = 0;
     Integer max_dim = 0;
-    for (auto i = 0; i < filt_op.size(); ++i) {
+    for (size_t i = 0; i < filt_op.size(); ++i) {
         if (filt_op[i]) { 
             ++simp_num; 
             if (filt_simp[i].size() - 1 > max_dim) { max_dim = filt_simp[i].size() - 1; }
@@ -128,7 +131,7 @@ void FastZigzag::compute(const std::vector<Simplex> &filt_simp,
     Integer orig_f_id = 0;
     Integer s_id = 1;
 
-    for (auto i = 0; i < filt_simp.size(); ++i) {
+    for (size_t i = 0; i < filt_simp.size(); ++i) {
         const Simplex &simp = filt_simp[i];
 
         if (filt_op[i]) {
@@ -149,7 +152,7 @@ void FastZigzag::compute(const std::vector<Simplex> &filt_simp,
         orig_f_id ++;
     }
 
-    for (Integer i = id_maps.size() - 1; i >= 0; -- i) {
+    for (size_t i = id_maps.size() - 1; i >= 0; -- i) {
         for (const auto &it : id_maps.at(i)) { 
             del_ids.push_back(it.second); 
             orig_f_del_id.push_back(orig_f_id);
@@ -206,7 +209,7 @@ void FastZigzag::compute(const std::vector<Simplex> &filt_simp,
             persistence->emplace_back(b, d, p);
     }
 }
-std::vector<std::tuple<Integer, Integer, Integer>> FastZigzag::compute_zigzag(const std::vector<std::tuple<char, std::vector<Simplex>>> &filt_simp) {
+std::vector<std::tuple<Integer, Integer, Integer>> FastZigzag::compute_zigzag(const std::vector<std::tuple<char, std::vector<int>>> &filt_simp) {
     std::vector<Simplex> filt_simp_lin;
     std::vector<bool> filt_op;
     
@@ -215,13 +218,17 @@ std::vector<std::tuple<Integer, Integer, Integer>> FastZigzag::compute_zigzag(co
     for (auto i = 0; i < filt_simp.size(); ++i) {
         auto op = std::get<0>(filt_simp[i]);
         auto simp = std::get<1>(filt_simp[i]);
+        Simplex s;
         if (op == 'i') {
             filt_op.emplace_back(true);
         } else {
             assert(op == 'd');
             filt_op.emplace_back(false);
         }
-        filt_simp_lin.emplace_back(simp);
+        for(auto k = 0; k < simp.size(); ++k)
+            s.push_back(simp[k]);
+
+        filt_simp_lin.emplace_back(s);
     }
     std::vector< std::tuple<FZZ::Integer, FZZ::Integer, FZZ::Integer> > persistence;
     // FZZ::FastZigzag fzz;
@@ -230,8 +237,8 @@ std::vector<std::tuple<Integer, Integer, Integer>> FastZigzag::compute_zigzag(co
 }
 } // namespace FZZ {
 
-PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
-    py::class_<FZZ::FastZigzag>(m, "fzz")
+PYBIND11_MODULE(pyfzz, m) {
+    py::class_<FZZ::FastZigzag>(m, "pyfzz")
         .def(py::init<>())
         .def("compute_zigzag", &FZZ::FastZigzag::compute_zigzag);
 }

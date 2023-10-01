@@ -28,7 +28,7 @@ public:
     */
    FastZigzag()
    {}
-   std::vector<std::tuple<Integer, Integer, Integer>> compute_zigzag(const std::vector<std::tuple<char, std::vector<Simplex>>> &filt_simp);
+   std::vector<std::tuple<Integer, Integer, Integer>> compute_zigzag(const std::vector<std::tuple<char, std::vector<int>>> &filt_simp);
    
 private:
     void mapOrdIntv(Integer &b, Integer &d) {
