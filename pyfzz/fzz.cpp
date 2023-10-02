@@ -219,7 +219,7 @@ std::vector<std::tuple<Integer, Integer, Integer>> FastZigzag::compute_zigzag(co
         auto op = std::get<0>(filt_simp[i]);
         auto simp = std::get<1>(filt_simp[i]);
         // filt_simp_lin.emplace_back();
-        std::cout << "idx: " << i;
+       
         FZZ::Simplex s;
         if (op == 'i') {
             filt_op.push_back(true);
@@ -227,12 +227,12 @@ std::vector<std::tuple<Integer, Integer, Integer>> FastZigzag::compute_zigzag(co
             assert(op == 'd');
             filt_op.push_back(false);
         }
-        std::cout << " Simplex: ";
+        
         for(auto k = 0; k < simp.size(); k++){
             s.push_back(simp[k]);
-            std::cout << simp[k] << " ";
+            
         }
-        std::cout << std::endl;
+        // std::cout << std::endl;
 
         filt_simp_lin.push_back(s);
         
@@ -244,8 +244,8 @@ std::vector<std::tuple<Integer, Integer, Integer>> FastZigzag::compute_zigzag(co
 }
 } // namespace FZZ {
 
-PYBIND11_MODULE(pyfzz, m) {
-    py::class_<FZZ::FastZigzag>(m, "pyfzz")
+PYBIND11_MODULE(fzz, m) {
+    py::class_<FZZ::FastZigzag>(m, "fzz")
         .def(py::init<>())
         .def("compute_zigzag", &FZZ::FastZigzag::compute_zigzag);
 }
